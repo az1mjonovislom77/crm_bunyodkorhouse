@@ -13,7 +13,6 @@ class Projects(models.Model):
         FileExtensionValidator(
             allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'JPG', 'JPEG', 'PNG', 'SVG', 'WEBP', 'heic',
                                 'heif']), check_image_size])
-    rate = models.PositiveIntegerField(default=0)
 
     def save(self, *args, **kwargs):
         if self.pk:
