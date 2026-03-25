@@ -12,7 +12,7 @@ class Projects(models.Model):
     image = models.FileField(upload_to='projects/', validators=[
         FileExtensionValidator(
             allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'JPG', 'JPEG', 'PNG', 'SVG', 'WEBP', 'heic',
-                                'heif']), check_image_size])
+                                'heif']), check_image_size], null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.pk:
