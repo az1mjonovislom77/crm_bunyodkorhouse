@@ -72,6 +72,4 @@ class FloorPlan(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        if self.home and self.home.title:
-            return self.home.title
         return f"FloorPlan {self.pk}"
