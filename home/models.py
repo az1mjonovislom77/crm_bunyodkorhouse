@@ -39,15 +39,14 @@ class Home(models.Model):
     home_number = models.PositiveIntegerField(default=0)
     blocks = models.ForeignKey(Blocks, on_delete=models.SET_NULL, null=True, blank=True, related_name='homes')
     floor = models.ForeignKey(Floors, on_delete=models.SET_NULL, null=True, blank=True)
-    rooms = models.CharField(choices=RoomsChoice.choices, default=RoomsChoice.ONE, max_length=10, db_index=True)
+    rooms = models.IntegerField(choices=RoomsChoice.choices, default=RoomsChoice.ONE, db_index=True)
     area = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     home_status = models.CharField(choices=HomeStatus.choices, default=HomeStatus.AVAILABLE, max_length=30,
                                    db_index=True)
     renovation = models.ForeignKey(Renovation, on_delete=models.SET_NULL, null=True, blank=True)
     basement = models.ForeignKey(Basement, on_delete=models.SET_NULL, null=True, blank=True)
     price_per_sqm = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    entrance = models.CharField(choices=EntranceChoice.choices, default=EntranceChoice.ONE, max_length=10,
-                                db_index=True)
+    entrance = models.IntegerField(choices=EntranceChoice.choices, default=EntranceChoice.ONE, db_index=True)
 
     def __str__(self):
         return f"Home {self.home_number}"
