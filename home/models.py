@@ -13,28 +13,28 @@ class Home(models.Model):
         NOMIGA_OTKAZIB_BERILDI = 'nomiga_otkazib_berildi', 'Nomiga O`tkazib Berildi'
 
     class EntranceChoice(models.IntegerChoices):
-        ONE = 1, "1"
-        TWO = 2, "2"
-        THREE = 3, "3"
-        FOUR = 4, "4"
-        FIVE = 5, "5"
-        SIX = 6, "6"
-        SEVEN = 7, "7"
-        EIGHT = 8, "8"
-        NINE = 9, "9"
-        TEN = 10, "10"
+        ONE = 1, "1 p"
+        TWO = 2, "2 p"
+        THREE = 3, "3 p"
+        FOUR = 4, "4 p"
+        FIVE = 5, "5 p"
+        SIX = 6, "6 p"
+        SEVEN = 7, "7 p"
+        EIGHT = 8, "8 p"
+        NINE = 9, "9 p"
+        TEN = 10, "10 p"
 
     class RoomsChoice(models.IntegerChoices):
-        ONE = 1, "1"
-        TWO = 2, "2"
-        THREE = 3, "3"
-        FOUR = 4, "4"
-        FIVE = 5, "5"
-        SIX = 6, "6"
-        SEVEN = 7, "7"
-        EIGHT = 8, "8"
-        NINE = 9, "9"
-        TEN = 10, "10"
+        ONE = 1, "1 xona"
+        TWO = 2, "2 xona"
+        THREE = 3, "3 xona"
+        FOUR = 4, "4 xona"
+        FIVE = 5, "5 xona"
+        SIX = 6, "6 xona"
+        SEVEN = 7, "7 xona"
+        EIGHT = 8, "8 xona"
+        NINE = 9, "9 xona"
+        TEN = 10, "10 xona"
 
     home_number = models.PositiveIntegerField(default=0)
     blocks = models.ForeignKey(Blocks, on_delete=models.SET_NULL, null=True, blank=True, related_name='homes')
