@@ -1,5 +1,6 @@
 from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.conf import settings
 from utils.compressor import optimize_image_to_webp, check_image_size
 from utils.models import Blocks, Floors, Renovation, Basement
 
@@ -50,6 +51,17 @@ class Home(models.Model):
 
     def __str__(self):
         return f"Home {self.home_number}"
+
+
+class HomeStatusHistory(models.Model):
+    home = models.ForeignKey(Home, on_delete=models.CASCADE, related_name="status_history")
+    from_status = models.CharField(max_length=30, null=True, blank=True)
+    to_status = models.CharField(max_length=30)
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-changed_at"]
 
 
 class FloorPlan(models.Model):

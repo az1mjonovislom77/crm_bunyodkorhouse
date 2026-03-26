@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from home.models import FloorPlan, Home
+from home.models import FloorPlan, Home, HomeStatusHistory
 
 
 class FloorPlanSerializer(serializers.ModelSerializer):
@@ -41,3 +41,11 @@ class HomeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Home
         fields = '__all__'
+
+
+class HomeStatusHistorySerializer(serializers.ModelSerializer):
+    changed_by = serializers.StringRelatedField()
+
+    class Meta:
+        model = HomeStatusHistory
+        fields = ["id", "from_status", "to_status", "changed_by", "changed_at"]

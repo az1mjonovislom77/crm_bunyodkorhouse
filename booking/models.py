@@ -1,7 +1,6 @@
 from django.db import models
-
-from client.models import Client
 from home.models import Home
+from client.models import Client
 
 
 class PaymentTerm(models.Model):
