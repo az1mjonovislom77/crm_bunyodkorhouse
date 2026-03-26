@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
         df = pd.read_excel(file_path)
 
-        block_obj, _ = Blocks.objects.get_or_create(title="A")
+        block_obj, _ = Blocks.objects.get_or_create(title="B")
 
         for _, row in df.iterrows():
             floor_number = int(row['floor'])
