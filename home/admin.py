@@ -14,5 +14,5 @@ class FloorPlanInline(admin.TabularInline):
 
 @admin.register(Home)
 class HomeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'home_number']
+    list_display = ['id', 'home_number', 'floor']
     inlines = [FloorPlanInline]
