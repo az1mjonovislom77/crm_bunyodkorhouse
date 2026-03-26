@@ -4,11 +4,11 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     "backend.bunyodkorhouse.uz",
-    "crm.bunyodkorhouse.uz"
+    "crm.bunyodkorhouse.uz",
+    "professional-bunyodkor.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
 
 DATABASES = {
     'default': {
