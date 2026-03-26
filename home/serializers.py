@@ -48,4 +48,4 @@ class HomeStatusHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HomeStatusHistory
-        fields = ["id", "from_status", "to_status", "changed_by", "changed_at"]
+        fields = ["id", "home", "from_status", "to_status", "changed_by", "changed_at"]
