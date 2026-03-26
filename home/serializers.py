@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.fields import SerializerMethodField
+
 from home.models import FloorPlan, Home, HomeStatusHistory
 
 
@@ -45,7 +47,20 @@ class HomeCreateSerializer(serializers.ModelSerializer):
 
 class HomeStatusHistorySerializer(serializers.ModelSerializer):
     changed_by = serializers.StringRelatedField()
+    home_number = SerializerMethodField()
+    home_block = SerializerMethodField()
+    home_floor = SerializerMethodField()
 
     class Meta:
         model = HomeStatusHistory
-        fields = ["id", "home", "from_status", "to_status", "changed_by", "changed_at"]
+        fields = ["id", "home", "from_status", "to_status", "changed_by", "changed_at", "home_number", "home_block",
+                  "home_floor"]
+
+    def get_home_number(self, obj):
+        return obj.home.number if obj.home else None
+
+    def get_home_block(self, obj):
+        return obj.home.blocks.title if obj.home and obj.home.blocks else None
+
+    def get_home_floor(self, obj):
+        return obj.home.floor.number if obj.home and obj.home.floor else None
