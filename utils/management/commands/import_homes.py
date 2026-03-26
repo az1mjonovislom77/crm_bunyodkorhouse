@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Import homes from Excel file'
 
     def handle(self, *args, **kwargs):
-        file_path = os.path.join(settings.BASE_DIR, 'data', 'homes.xlsx')
+        file_path = os.path.join(settings.BASE_DIR, 'data', 'homes2.xlsx')
 
         df = pd.read_excel(file_path)
 
