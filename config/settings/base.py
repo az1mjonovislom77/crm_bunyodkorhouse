@@ -48,15 +48,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3002",
     "http://localhost:3003",
     "http://localhost:3004",
-    "https://45.55.129.34",
-    "https://185.191.141.213",
-    "https://138.197.125.10",
-    "https://professional-bunyodkor.vercel.app/",
-    "https://backend.bunyodkorhouse.uz/",
-    "https://crm.bunyodkorhouse.uz/"
+    "https://professional-bunyodkor.vercel.app",
+    "https://backend.bunyodkorhouse.uz",
+    "https://crm.bunyodkorhouse.uz"
 ]
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    "https://backend.bunyodkorhouse.uz",
+    "https://crm.bunyodkorhouse.uz",
+    "https://professional-bunyodkor.vercel.app",
+]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

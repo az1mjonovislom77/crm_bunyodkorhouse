@@ -2,9 +2,13 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "backend.bunyodkorhouse.uz",
+    "crm.bunyodkorhouse.uz"
+]
 
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+
 
 DATABASES = {
     'default': {
