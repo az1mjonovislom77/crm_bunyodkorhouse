@@ -10,11 +10,11 @@ class Command(BaseCommand):
     help = 'Import homes from Excel file'
 
     def handle(self, *args, **kwargs):
-        file_path = os.path.join(settings.BASE_DIR, 'data', 'homes6.xlsx')
+        file_path = os.path.join(settings.BASE_DIR, 'data', 'homes.xlsx')
 
         df = pd.read_excel(file_path)
 
-        block_obj, _ = Blocks.objects.get_or_create(title="A-1")
+        block_obj, _ = Blocks.objects.get_or_create(title="A")
 
         for _, row in df.iterrows():
             floor_number = int(row['floor'])
@@ -27,12 +27,13 @@ class Command(BaseCommand):
 
             Home.objects.update_or_create(
                 home_number=home_number,
+                floor=floor_obj,
+                blocks=block_obj,
                 defaults={
-                    "blocks": block_obj,
-                    "floor": floor_obj,
                     "area": area,
                     "rooms": rooms,
-                    "price_per_sqm": price
+                    "price_per_sqm": price,
+                    "entrance": 1,
                 }
             )
 
