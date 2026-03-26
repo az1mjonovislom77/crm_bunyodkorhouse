@@ -8,7 +8,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from home.models import Home, HomeStatusHistory
-from home.serializers import HomeGetSerializer, HomeCreateSerializer, HomeStatusHistorySerializer
+from home.serializers import HomeGetSerializer, HomeCreateSerializer, HomeStatusHistorySerializer, \
+    HomeDetailGetSerializer
 from home.services.history import HomeService
 from utils.base.views_base import BaseUserViewSet
 
@@ -35,6 +36,8 @@ class HomePagination(PageNumberPagination):
 
 @extend_schema(tags=['Home'])
 class HomeViewSet(BaseUserViewSet):
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['blocks__projects', 'blocks', 'home_status']
 
     def get_queryset(self):
         return (Home.objects.select_related(
@@ -64,30 +67,31 @@ class HomeViewSet(BaseUserViewSet):
     def get_serializer_class(self):
         if self.action == "create":
             return HomeCreateSerializer
+        elif self.action == "retrieve":
+            return HomeDetailGetSerializer
         return HomeGetSerializer
 
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['blocks__projects', 'blocks', 'home_status']
 
-    def perform_update(self, serializer):
-        instance = self.get_object()
-        new_status = serializer.validated_data.get("home_status")
+def perform_update(self, serializer):
+    instance = self.get_object()
+    new_status = serializer.validated_data.get("home_status")
 
-        if new_status and new_status != instance.home_status:
-            HomeService.change_status(home_id=instance.id, new_status=new_status, user=self.request.user)
+    if new_status and new_status != instance.home_status:
+        HomeService.change_status(home_id=instance.id, new_status=new_status, user=self.request.user)
 
-        serializer.save()
+    serializer.save()
 
-    @action(detail=True, methods=["get"])
-    def history(self, request, pk=None):
-        queryset = HomeStatusHistory.objects.select_related("changed_by").filter(home_id=pk).order_by("-changed_at")
 
-        user = request.query_params.get("user")
-        if user:
-            queryset = queryset.filter(changed_by_id=user)
+@action(detail=True, methods=["get"])
+def history(self, request, pk=None):
+    queryset = HomeStatusHistory.objects.select_related("changed_by").filter(home_id=pk).order_by("-changed_at")
 
-        serializer = HomeStatusHistorySerializer(queryset, many=True)
-        return Response(serializer.data)
+    user = request.query_params.get("user")
+    if user:
+        queryset = queryset.filter(changed_by_id=user)
+
+    serializer = HomeStatusHistorySerializer(queryset, many=True)
+    return Response(serializer.data)
 
 
 @extend_schema(tags=['HomeHistory'])
