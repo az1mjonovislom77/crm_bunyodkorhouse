@@ -6,7 +6,7 @@ from home.services.history import HomeService
 
 
 @transaction.atomic
-def create_booking(*, client, home, **extra):
+def create_booking(*, client, home, user, **extra):
     home = Home.objects.select_for_update().get(id=home.id)
 
     if home.home_status != Home.HomeStatus.AVAILABLE:
@@ -14,7 +14,7 @@ def create_booking(*, client, home, **extra):
 
     booking = Booking.objects.create(client=client, home=home, **extra)
 
-    HomeService.change_status(home_id=home.id, new_status=Home.HomeStatus.SOLD, user=client)
+    HomeService.change_status(home_id=home.id, new_status=Home.HomeStatus.SOLD, user=user)
 
     return booking
 
