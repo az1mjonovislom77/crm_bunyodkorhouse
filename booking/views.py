@@ -21,7 +21,7 @@ class BookingViewSet(BaseUserViewSet):
         return BookingGetSerializer
 
     def perform_create(self, serializer):
-        create_booking(**serializer.validated_data)
+        create_booking(user=self.request.user, **serializer.validated_data)
 
     def perform_destroy(self, instance):
         delete_booking(instance.id)
