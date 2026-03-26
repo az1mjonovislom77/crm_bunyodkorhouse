@@ -11,7 +11,7 @@ class Blocks(models.Model):
 
 
 class Floors(models.Model):
-    number = models.PositiveIntegerField(default=0)
+    number = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.number)
