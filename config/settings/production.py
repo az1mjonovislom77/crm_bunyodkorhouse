@@ -6,6 +6,8 @@ ALLOWED_HOSTS = [
     "backend.bunyodkorhouse.uz",
     "crm.bunyodkorhouse.uz",
     "professional-bunyodkor.vercel.app",
+    "localhost",
+    "127.0.0.1",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
