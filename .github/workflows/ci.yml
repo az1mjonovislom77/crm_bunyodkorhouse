@@ -28,6 +28,7 @@ jobs:
         env:
           SECRET_KEY: "dummy-secret-key-for-ci"
           DEBUG: "True"
+          INSTAGRAM_ACCESS_TOKEN: "dummy-token"
         run: |
           python manage.py check
 
