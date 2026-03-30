@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+
 from home.models import Home
 from client.models import Client
 
@@ -22,6 +24,7 @@ class Booking(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="booking")
     down_payment = models.IntegerField(choices=DownPaymentChoice.choices)
     payment_term = models.ForeignKey(PaymentTerm, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return str(self.id)
