@@ -29,4 +29,4 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ['booking', 'home_status_history', 'full_name', 'phone_number', 'passport', 'address']
+        fields = ['id', 'booking', 'home_status_history', 'full_name', 'phone_number', 'passport', 'address']
