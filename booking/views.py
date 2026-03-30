@@ -21,4 +21,5 @@ class BookingViewSet(BaseUserViewSet):
         return BookingGetSerializer
 
     def perform_destroy(self, instance):
-        delete_booking(instance.id)
+        delete_booking(
+            booking_id=instance.id, user=self.request.user)

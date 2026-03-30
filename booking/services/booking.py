@@ -5,12 +5,11 @@ from home.services.history import HomeService
 
 
 @transaction.atomic
-def delete_booking(booking_id):
-    with transaction.atomic():
-        booking = Booking.objects.select_related('home').get(id=booking_id)
-        home = Home.objects.select_for_update().get(id=booking.home_id)
+def delete_booking(booking_id, user=None):
+    booking = Booking.objects.select_related('home').get(id=booking_id)
+    home = Home.objects.select_for_update().get(id=booking.home_id)
 
-        booking.delete()
+    booking.delete()
 
-        if not hasattr(home, 'booking'):
-            HomeService.change_status(home_id=home.id, new_status=Home.HomeStatus.AVAILABLE)
+    if not hasattr(home, 'booking'):
+        HomeService.change_status(home_id=home.id, new_status=Home.HomeStatus.AVAILABLE, user=user)
