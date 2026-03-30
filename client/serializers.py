@@ -25,7 +25,7 @@ class BookingNestSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
-    booking = BookingNestSerializer(many=True, read_only=True)
+    booking = BookingNestSerializer(source='bookings', many=True, read_only=True)
     home_status_history = serializers.SerializerMethodField()
 
     class Meta:
