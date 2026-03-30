@@ -8,7 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('user.api.urls')),
     path('instagram/', include('instagram.urls')),
-    path('projects/', include('projects.urls')),
+    path('projects/', include('projects.api.urls')),
     path('home/', include('home.urls')),
     path('booking/', include('booking.urls')),
     path('utils/', include('utils.urls')),
