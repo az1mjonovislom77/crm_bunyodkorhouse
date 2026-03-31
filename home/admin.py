@@ -15,4 +15,6 @@ class FloorPlanInline(admin.TabularInline):
 @admin.register(Home)
 class HomeAdmin(admin.ModelAdmin):
     list_display = ['id', 'home_number', 'floor']
+    list_filter = ('home_number', 'floor', 'blocks', 'rooms')
+    search_fields = ('home_number', 'blocks', 'rooms', 'floor', 'area')
     inlines = [FloorPlanInline]
