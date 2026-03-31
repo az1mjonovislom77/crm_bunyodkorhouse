@@ -5,7 +5,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from home.api.serializers.home_serializers import HomeGetSerializer, HomeDetailGetSerializer, HomeCreateSerializer, \
+from home.api.home_serializers import HomeGetSerializer, HomeDetailGetSerializer, HomeCreateSerializer, \
     HomeStatusHistorySerializer
 from home.models import HomeStatusHistory
 from home.selectors.history_selectors import get_home_history

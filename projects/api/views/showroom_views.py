@@ -2,6 +2,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.generics import ListAPIView
 from projects.api.serializers.showroom_serializers import SVGSerializer, ShowroomSerializer
 from projects.models.showroom_models import SVG, Showroom
+from projects.selectors.showroom_selectors import get_blocks_stats
 
 
 @extend_schema(tags=['SVG'])
@@ -13,6 +14,8 @@ class SVGView(ListAPIView):
 
 @extend_schema(tags=['Showroom'])
 class ShowroomView(ListAPIView):
-    queryset = Showroom.objects.all()
     serializer_class = ShowroomSerializer
     pagination_class = None
+
+    def get_queryset(self):
+        return get_blocks_stats()
