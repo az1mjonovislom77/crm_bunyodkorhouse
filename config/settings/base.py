@@ -156,6 +156,8 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 52428800
+
 INSTAGRAM_ACCESS_TOKEN = config('INSTAGRAM_ACCESS_TOKEN')
 INSTAGRAM_API_VERSION = "v19.0"
 GRAPH_BASE_URL = "https://graph.facebook.com"
