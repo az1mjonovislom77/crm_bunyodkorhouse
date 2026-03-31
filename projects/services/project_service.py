@@ -1,5 +1,5 @@
 from projects.models import Projects
-from projects.services.image_service import process_project_image
+from core.services.image_service import process_image
 
 
 class ProjectService:
@@ -9,7 +9,7 @@ class ProjectService:
         image = validated_data.get("image")
 
         if image:
-            validated_data["image"] = process_project_image(image)
+            validated_data["image"] = process_image(image)
 
         return Projects.objects.create(**validated_data)
 
@@ -18,7 +18,7 @@ class ProjectService:
         image = validated_data.get("image")
 
         if image:
-            validated_data["image"] = process_project_image(image)
+            validated_data["image"] = process_image(image)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

@@ -8,9 +8,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from home.models import Home, HomeStatusHistory
+from home.selectors.history_selectors import get_home_history
+from home.selectors.home_selectors import get_homes_with_finance
 from home.serializers import HomeGetSerializer, HomeCreateSerializer, HomeStatusHistorySerializer, \
     HomeDetailGetSerializer
-from home.services.history import HomeService
+from home.services.home import HomeService
 from utils.base.views_base import BaseUserViewSet
 
 
@@ -40,29 +42,7 @@ class HomeViewSet(BaseUserViewSet):
     filterset_fields = ['blocks__projects', 'blocks', 'home_status']
 
     def get_queryset(self):
-        return (Home.objects.select_related(
-            'blocks', 'blocks__projects', 'floor', 'renovation', 'booking', 'booking__payment_term')
-        .annotate(
-            total_price_annotated=ExpressionWrapper(
-                Coalesce(F('area') * F('price_per_sqm'), 0) +
-                Coalesce(F('renovation__price'), 0),
-                output_field=DecimalField(max_digits=14, decimal_places=2)
-            ),
-            initial_payment_annotated=ExpressionWrapper(
-                (Coalesce(F('area') * F('price_per_sqm'), 0) +
-                 Coalesce(F('renovation__price'), 0)) *
-                Coalesce(F('booking__down_payment'), 0) / Value(100),
-                output_field=DecimalField(max_digits=14, decimal_places=2)
-            ),
-            monthly_payment_annotated=ExpressionWrapper(
-                ((Coalesce(F('area') * F('price_per_sqm'), 0) +
-                  Coalesce(F('renovation__price'), 0)) -
-                 ((Coalesce(F('area') * F('price_per_sqm'), 0) +
-                   Coalesce(F('renovation__price'), 0)) *
-                  Coalesce(F('booking__down_payment'), 0) / Value(100))) /
-                Coalesce(F('booking__payment_term__months'), 1),
-                output_field=DecimalField(max_digits=14, decimal_places=2)
-            )))
+        return get_homes_with_finance()
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -71,27 +51,27 @@ class HomeViewSet(BaseUserViewSet):
             return HomeDetailGetSerializer
         return HomeGetSerializer
 
+    def perform_create(self, serializer):
+        HomeService.create_home(serializer.validated_data)
 
-def perform_update(self, serializer):
-    instance = self.get_object()
-    new_status = serializer.validated_data.get("home_status")
+    def perform_update(self, serializer):
+        instance = self.get_object()
 
-    if new_status and new_status != instance.home_status:
-        HomeService.change_status(home_id=instance.id, new_status=new_status, user=self.request.user)
+        new_status = serializer.validated_data.get("home_status")
 
-    serializer.save()
+        if new_status and new_status != instance.home_status:
+            HomeService.change_status(home_id=instance.id, new_status=new_status, user=self.request.user)
 
+        HomeService.update_home(instance, serializer.validated_data)
 
-@action(detail=True, methods=["get"])
-def history(self, request, pk=None):
-    queryset = HomeStatusHistory.objects.select_related("changed_by").filter(home_id=pk).order_by("-changed_at")
+    @action(detail=True, methods=["get"])
+    def history(self, request, pk=None):
+        user = request.query_params.get("user")
 
-    user = request.query_params.get("user")
-    if user:
-        queryset = queryset.filter(changed_by_id=user)
+        queryset = get_home_history(home_id=pk, user_id=user)
 
-    serializer = HomeStatusHistorySerializer(queryset, many=True)
-    return Response(serializer.data)
+        serializer = HomeStatusHistorySerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 @extend_schema(tags=['HomeHistory'])

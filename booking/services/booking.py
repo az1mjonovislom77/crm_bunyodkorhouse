@@ -1,7 +1,7 @@
 from django.db import transaction
 from booking.models import Booking
 from home.models import Home
-from home.services.history import HomeService
+from home.services.home import HomeService
 
 
 @transaction.atomic
