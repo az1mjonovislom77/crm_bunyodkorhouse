@@ -36,7 +36,7 @@ class HomeGetSerializer(serializers.ModelSerializer):
 
 
 class HomeCreateSerializer(serializers.ModelSerializer):
-    floorplan = FloorPlanSerializer(source='floor_plan', many=True)
+    floorplan = FloorPlanSerializer(source='plans', many=True)
 
     class Meta:
         model = Home
