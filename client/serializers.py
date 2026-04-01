@@ -32,14 +32,4 @@ class ClientSerializer(serializers.ModelSerializer):
         fields = ['id', 'booking', 'home_status_history', 'full_name', 'phone_number', 'passport', 'address']
 
     def get_home_status_history(self, obj):
-        history = []
-
-        for booking in obj.bookings.all():
-            home = booking.home
-
-            if hasattr(home, "prefetched_history"):
-                history.extend(home.prefetched_history)
-
-        unique = {h.id: h for h in history}.values()
-
-        return HomeStatusHistorySerializer(unique, many=True).data
+        return HomeStatusHistorySerializer(obj.status_history.all(), many=True).data

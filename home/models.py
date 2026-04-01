@@ -2,6 +2,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.conf import settings
 
+from client.models import Client
 from projects.models.project_models import Blocks, Floors, Renovation
 
 
@@ -53,6 +54,7 @@ class Home(models.Model):
 
 
 class HomeStatusHistory(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True, related_name='status_history')
     home = models.ForeignKey(Home, on_delete=models.CASCADE, related_name="status_history")
     from_status = models.CharField(max_length=30, null=True, blank=True)
     to_status = models.CharField(max_length=30)
