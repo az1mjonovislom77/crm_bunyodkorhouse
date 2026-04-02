@@ -15,7 +15,8 @@ class PaymentTermViewSet(BaseUserViewSet):
 
 @extend_schema(tags=['Booking'])
 class BookingViewSet(BaseUserViewSet):
-    queryset = Booking.objects.select_related('home', 'company', 'payment_term', 'client')
+    queryset = Booking.objects.select_related('home', 'home__blocks', 'home__floor', 'home__rooms', 'company',
+                                              'payment_term', 'client')
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -23,28 +24,10 @@ class BookingViewSet(BaseUserViewSet):
         return BookingGetSerializer
 
     def perform_create(self, serializer):
-        booking = serializer.save()
-
-        HomeService.change_status(
-            home_id=booking.home.id,
-            new_status=Home.HomeStatus.RESERVED,
-            user=self.request.user,
-            client=booking.client
-        )
+        serializer.save()
 
     def perform_update(self, serializer):
-        booking = serializer.save()
-        new_status = self.request.data.get("home_status")
-
-        if new_status:
-            from home.services.home import HomeService
-
-            HomeService.change_status(
-                home_id=booking.home.id,
-                new_status=new_status,
-                user=self.request.user,
-                client=booking.client
-            )
+        serializer.save()
 
     def perform_destroy(self, instance):
         delete_booking(booking_id=instance.id, user=self.request.user)
