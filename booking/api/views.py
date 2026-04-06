@@ -1,11 +1,8 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import IsAuthenticated
-
 from booking.models import Booking, PaymentTerm
 from booking.api.serializers import BookingCreateSerializer, BookingGetSerializer, PaymentTermSerializer
 from booking.services.booking import delete_booking, create_booking
 from common.base.views_base import BaseUserViewSet
-from rest_framework import viewsets
 
 
 @extend_schema(tags=['PaymentTerm'])
@@ -15,10 +12,7 @@ class PaymentTermViewSet(BaseUserViewSet):
 
 
 @extend_schema(tags=['Booking'])
-class BookingViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'delete']
-    permission_classes = [IsAuthenticated]
-    pagination_class = None
+class BookingViewSet(BaseUserViewSet):
     queryset = Booking.objects.select_related('home', 'home__blocks', 'home__floor', 'company', 'payment_term',
                                               'client')
 
