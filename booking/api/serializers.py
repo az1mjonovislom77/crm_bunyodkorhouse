@@ -43,7 +43,7 @@ class BookingGetSerializer(serializers.ModelSerializer):
         return obj.home.floor.number if obj.home and obj.home.floor else None
 
     def get_rooms_number(self, obj):
-        return obj.home.rooms.number if obj.home and obj.home.rooms else None
+        return obj.home.rooms if obj.home and obj.home.rooms else None
 
     def get_total_area(self, obj):
         return obj.home.area if obj.home else None
