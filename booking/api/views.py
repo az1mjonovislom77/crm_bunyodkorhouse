@@ -1,4 +1,5 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from booking.models import Booking, PaymentTerm
 from booking.api.serializers import BookingCreateSerializer, BookingGetSerializer, PaymentTermSerializer
 from booking.services.booking import delete_booking, create_booking
@@ -12,10 +13,20 @@ class PaymentTermViewSet(BaseUserViewSet):
     serializer_class = PaymentTermSerializer
 
 
-@extend_schema(tags=['Booking'])
+@extend_schema(tags=['Booking'],
+               parameters=[OpenApiParameter(name='home_id', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY)])
 class BookingViewSet(BaseUserViewSet):
     queryset = Booking.objects.select_related('home', 'home__blocks', 'home__floor', 'company', 'payment_term',
                                               'client')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        home_id = self.request.query_params.get('home_id')
+
+        if home_id:
+            queryset = queryset.filter(home_id=home_id)
+
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['create', 'update', 'partial_update']:
