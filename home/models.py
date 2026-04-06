@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 
 from client.models import Client
+from core.services.image_service import optimize_image_to_webp, check_image_size
 from projects.models.project_models import Blocks, Floors, Renovation
 
 
@@ -68,9 +69,23 @@ class HomeStatusHistory(models.Model):
 class FloorPlan(models.Model):
     home = models.ForeignKey(Home, on_delete=models.SET_NULL, null=True, blank=True, related_name='plans')
 
-    image = models.ImageField(upload_to='projects/',
+    image = models.ImageField(upload_to='floor_plan/',
                               validators=[FileExtensionValidator(
-                                  allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heic', 'heif'])])
+                                  allowed_extensions=['jpg', 'jpeg', 'png', 'svg', 'webp', 'heic', 'heif']),
+                                  check_image_size])
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old = FloorPlan.objects.only("image").filter(pk=self.pk).first()
+            if old and old.image == self.image:
+                super().save(*args, **kwargs)
+                return
+
+        if self.image and not self.image.name.lower().endswith(".webp"):
+            optimized_image = optimize_image_to_webp(self.image, quality=80)
+            self.image.save(optimized_image.name, optimized_image, save=False)
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"FloorPlan {self.pk}"
