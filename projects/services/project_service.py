@@ -1,5 +1,5 @@
+from common.services.image_service import process_image
 from projects.models.project_models import Projects
-from common.services import process_image
 
 
 class ProjectService:

@@ -1,4 +1,4 @@
-from common.services import process_image
+from common.services.image_service import process_image
 from home.models import FloorPlan
 
 

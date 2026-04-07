@@ -2,7 +2,7 @@ from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.conf import settings
 from client.models import Client
-from common.services import optimize_image_to_webp, check_image_size
+from common.services.image_service import check_image_size, optimize_image_to_webp
 from projects.models.project_models import Blocks, Floors, Renovation
 
 

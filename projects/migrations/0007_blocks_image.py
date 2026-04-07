@@ -3,7 +3,7 @@
 import django.core.validators
 from django.db import migrations, models
 
-from common.services import check_image_size
+from common.services.image_service import check_image_size
 
 
 class Migration(migrations.Migration):
