@@ -5,7 +5,7 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-from core.services.image_service import check_image_size
+from common.services import check_image_size
 
 
 class Migration(migrations.Migration):

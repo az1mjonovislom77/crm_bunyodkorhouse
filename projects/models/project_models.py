@@ -1,4 +1,4 @@
-from core.services.image_service import check_image_size, optimize_image_to_webp
+from common.services import check_image_size, optimize_image_to_webp
 from user.models import User
 from django.db import models
 from django.core.validators import FileExtensionValidator
