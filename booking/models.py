@@ -22,6 +22,7 @@ class Company(models.Model):
 
 class Booking(models.Model):
     class DownPaymentChoice(models.IntegerChoices):
+        ZERO = 0, '0'
         TEN = 10, "10%"
         TWENTY = 20, "20%"
         THIRTY = 30, "30%"
