@@ -37,9 +37,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         SUPERADMIN = 'sa', "SUPERADMIN"
         ADMIN = 'a', "ADMIN"
 
-    full_name = models.CharField(max_length=100, blank=True)
+    full_name = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)
-    phone_number = models.CharField(max_length=20, blank=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
     role = models.CharField(max_length=10, choices=UserRoles.choices, default=UserRoles.SELLER)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

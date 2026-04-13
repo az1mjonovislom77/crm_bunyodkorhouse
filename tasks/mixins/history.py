@@ -1,0 +1,14 @@
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
+
+class HistoryMixin:
+    history_serializer_class = None
+
+    @action(detail=True, methods=['get'])
+    def history(self, request, pk=None):
+        obj = self.get_object()
+        history = obj.history.all().order_by('-history_date')
+
+        serializer = self.history_serializer_class(history, many=True)
+        return Response(serializer.data)

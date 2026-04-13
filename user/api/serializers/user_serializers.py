@@ -22,3 +22,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         return UserService.update_user(instance, validated_data)
+
+
+class UserMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'full_name')

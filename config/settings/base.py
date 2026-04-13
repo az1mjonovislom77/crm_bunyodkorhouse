@@ -25,7 +25,8 @@ LOCAL_APPS = [
     'instagram',
     'projects',
     'home',
-    'client'
+    'client',
+    'tasks'
 ]
 
 THIRD_PARTY_APPS = [
@@ -33,7 +34,8 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'corsheaders'
+    'corsheaders',
+    'simple_history'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
