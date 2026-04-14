@@ -1,10 +1,12 @@
 class AuditMixin:
 
     def perform_create(self, serializer):
-        serializer.save(
-            created_by=self.request.user,
-            user=self.request.user if 'user' in serializer.fields else None
-        )
+        extra_kwargs = {"created_by": self.request.user}
+
+        if serializer.Meta.model.__name__ == "Comment":
+            extra_kwargs["user"] = self.request.user
+
+        serializer.save(**extra_kwargs)
 
     def perform_update(self, serializer):
         serializer.save(updated_by=self.request.user)

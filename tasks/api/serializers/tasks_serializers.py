@@ -44,10 +44,10 @@ class ProjectGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('id', 'users', 'description', 'comments', 'users_full_name', 'card', 'card_title', 'title',
-                  'created_at')
+                  'created_by', 'updated_by')
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
 
-    def get_users_full_name(self, obj):
+    def get_users_full_name(self, obj):\
         return [user.full_name for user in obj.users.all()]
 
 
