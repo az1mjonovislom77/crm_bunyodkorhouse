@@ -14,14 +14,26 @@ class Card(TimeStampedModel):
 
 
 class Project(TimeStampedModel):
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='project', blank=True)
-    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='cards', null=True, blank=True)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='task_projects', blank=True)
+    card = models.ForeignKey(Card, on_delete=models.CASCADE, related_name='projects')
     title = models.CharField(max_length=200)
     description = models.TextField()
+    order = models.PositiveIntegerField()
     from_date = models.DateField(null=True, blank=True)
     to_date = models.DateField(null=True, blank=True)
 
     history = HistoricalRecords()
+
+    class Meta:
+        ordering = ['order']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['card', 'order'], name='unique_order_per_card'
+            )
+        ]
+        indexes = [
+            models.Index(fields=['card', 'order'], name='card_order_idx')
+        ]
 
     def __str__(self):
         return self.title
@@ -29,7 +41,7 @@ class Project(TimeStampedModel):
 
 class Comment(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
     file = models.FileField(upload_to='comments/', null=True, blank=True)
 

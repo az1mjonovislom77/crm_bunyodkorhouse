@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
 from common.base.serializers_base import BaseReadSerializer
 from tasks.models import Card, Project, Comment
+from tasks.services.project import create_project, update_project
 from user.api.serializers.user_serializers import UserMiniSerializer
 
 
@@ -13,12 +14,6 @@ class CardSerializer(BaseReadSerializer):
         model = Card
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        validated_data['created_by'] = user
-
-        return Card.objects.create(**validated_data)
-
 
 class CommentSerializer(BaseReadSerializer):
     created_by = UserMiniSerializer(read_only=True)
@@ -27,11 +22,6 @@ class CommentSerializer(BaseReadSerializer):
     class Meta(BaseReadSerializer.Meta):
         model = Comment
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
-
-    def create(self, validated_data):
-        user = self.context['request'].user
-
-        return Comment.objects.create(created_by=user, **validated_data)
 
 
 class ProjectGetSerializer(serializers.ModelSerializer):
@@ -43,25 +33,35 @@ class ProjectGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('id', 'users', 'description', 'comments', 'users_full_name', 'card', 'card_title', 'title',
+        fields = ('id', 'users', 'description', 'comments', 'users_full_name', 'card', 'card_title', 'title', 'order',
                   'created_by', 'updated_by')
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
 
-    def get_users_full_name(self, obj):\
+    def get_users_full_name(self, obj):
         return [user.full_name for user in obj.users.all()]
 
 
 class ProjectCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ('users', 'description', 'card', 'title')
+        fields = ('users', 'description', 'card', 'title', 'order')
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+
+    def validate_order(self, value):
+        if value is not None and value < 1:
+            raise serializers.ValidationError("Order >= 1 bo‘lishi kerak")
+        return value
 
     def create(self, validated_data):
         users = validated_data.pop('users', [])
-        project = Project.objects.create(**validated_data)
+        order = validated_data.pop('order', None)
+        card = validated_data.pop('card', None)
 
-        if users:
-            project.users.set(users)
+        return create_project(card=card, users=users, order=order, **validated_data)
 
-        return project
+    def update(self, instance, validated_data):
+        users = validated_data.pop('users', None)
+        new_card = validated_data.pop('card', None)
+        new_order = validated_data.pop('order', None)
+
+        return update_project(instance, new_card=new_card, new_order=new_order, users=users, **validated_data)
