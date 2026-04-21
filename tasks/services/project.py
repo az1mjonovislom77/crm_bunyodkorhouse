@@ -4,6 +4,18 @@ from tasks.models import Project, Card
 from rest_framework.exceptions import ValidationError
 
 
+def _shift_orders(qs, *, delta):
+    project_ids = list(qs.values_list('id', flat=True))
+    if not project_ids:
+        return
+
+    max_order = Project.objects.aggregate(max_order=Max('order'))['max_order'] or 0
+    offset = max_order + len(project_ids) + abs(delta) + 1
+
+    Project.objects.filter(id__in=project_ids).update(order=F('order') + offset)
+    Project.objects.filter(id__in=project_ids).update(order=F('order') - offset + delta)
+
+
 def create_project(*, card=None, users=None, order=None, **data):
     with transaction.atomic():
         if card is None:
@@ -21,7 +33,7 @@ def create_project(*, card=None, users=None, order=None, **data):
             if order < 1:
                 order = 1
 
-            qs.filter(order__gte=order).update(order=F('order') + 1)
+            _shift_orders(qs.filter(order__gte=order), delta=1)
         project = Project.objects.create(card=card, order=order, **data)
 
         if users is not None:
@@ -64,16 +76,19 @@ def update_project(project, *, new_card=None, new_order=None, users=None, **data
         elif new_order < 1:
             new_order = 1
 
+        project.order = 0
+        project.save(update_fields=['order'])
+
         if old_card == new_card:
             if new_order > old_order:
-                old_qs.filter(order__gt=old_order, order__lte=new_order).update(order=F('order') - 1)
+                _shift_orders(old_qs.filter(order__gt=old_order, order__lte=new_order), delta=-1)
 
             elif new_order < old_order:
-                old_qs.filter(order__gte=new_order, order__lt=old_order).update(order=F('order') + 1)
+                _shift_orders(old_qs.filter(order__gte=new_order, order__lt=old_order), delta=1)
 
         else:
-            old_qs.filter(order__gt=old_order).update(order=F('order') - 1)
-            new_qs.filter(order__gte=new_order).update(order=F('order') + 1)
+            _shift_orders(old_qs.filter(order__gt=old_order), delta=-1)
+            _shift_orders(new_qs.filter(order__gte=new_order), delta=1)
 
         for key, value in data.items():
             setattr(project, key, value)

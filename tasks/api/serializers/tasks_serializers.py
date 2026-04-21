@@ -61,6 +61,7 @@ class ProjectUpdateSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('users', 'description', 'card', 'title', 'order')
         read_only_fields = ['created_at', 'updated_at', 'created_by', 'updated_by']
+        validators = []
 
     def validate_order(self, value):
         if value is not None and value < 1:
