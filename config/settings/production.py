@@ -2,7 +2,11 @@ from .base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = [s.strip() for s in config('ALLOWED_HOSTS').split(',') if s.strip()]
+ALLOWED_HOSTS = [
+    s.strip()
+    for s in config('ALLOWED_HOSTS').split(',')
+    if s.strip()
+]
 
 DATABASES = {
     'default': {

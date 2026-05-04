@@ -42,9 +42,17 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [s.strip() for s in config('CORS_ALLOWED_ORIGINS').split(',') if s.strip()]
+CORS_ALLOWED_ORIGINS = [
+    s.strip()
+    for s in config('CORS_ALLOWED_ORIGINS', default='').split(',')
+    if s.strip()
+]
 
-CSRF_TRUSTED_ORIGINS = [s.strip() for s in config('CSRF_TRUSTED_ORIGINS').split(',') if s.strip()]
+CSRF_TRUSTED_ORIGINS = [
+    s.strip()
+    for s in config('CSRF_TRUSTED_ORIGINS').split(',')
+    if s.strip()
+]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
